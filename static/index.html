@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MongoDB sample app</title>
+  </head>
+  <body>
+    <input type="text" placeholder="search" id="search" />
+    <h1 id="visitors">…</h1>
+    <button id="btn">Search</button>
+    <pre>
+        <code id="code">
+        </code>
+    </pre>
+    <script id="search.js">
+      const btn = document.getElementById("btn");
+      const code = document.getElementById("code");
+      const search = document.getElementById("search");
+
+      btn.addEventListener("click", async () => {
+        code.textContent = "loading...";
+        try {
+          const res = await fetch(
+            `/get?search=${encodeURIComponent(search.value)}`
+          );
+
+          const json = await res.json();
+
+          code.textContent = "\n" + JSON.stringify(json, null, 4);
+        } catch (err) {
+          console.log("error:", err);
+        }
+      });
+
+      async function registerPageView() {
+        const res = await fetch("/pageview");
+        const { views } = await res.json();
+        document.getElementById("visitors").innerText = `${views} visitors!`;
+      }
+      // registerPageView();
+    </script>
+  </body>
+</html>
